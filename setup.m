@@ -17,3 +17,4 @@ supress_warnings
 
 disp('Set up done')
 
+clear
