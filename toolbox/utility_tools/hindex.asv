@@ -1,0 +1,75 @@
+function h=hindex (oper, ht, varargin)
+% hindex (oper, ht, varargin) haded index array operations
+% $Revision: 1.1.1.1 $
+%
+%operations include:
+% init - initialize table
+% put - put values into talble
+% get - get index for a value value
+% val - return vaue for one or more indices
+% 
+switch lower(oper),
+    case ('init');
+        h=java.util.HashMap;
+    case 'put'
+        keyVal=varargin{1};
+        if ischar(keyVal),
+            nVal=1;
+        else
+            nVal=length(keyVal);
+        end
+        for i=1:nVal,
+            if iscell(keyVal),
+                curVal=keyVal{i};
+            elseif ischar(keyVal),
+                curVal=keyVal;
+            else
+                curVal=keyVal(i);
+            end
+            if ~ ht.containsKey(curVal),
+                ht.put(curVal,ht.size+1);
+            end
+        end
+        h=true;
+    case 'get' % Return an index for a value
+        keyVal=varargin{1}; 
+        if ischar(keyVal),
+            nVal=1;
+        else
+            nVal=length(keyVal);
+        end
+        for i=1:nVal,
+            if ischar(keyVal),
+                curVal=keyVal;
+            elseif iscell(keyVal),
+                curVal=keyVal{i};
+            else
+                curVal=keyVal(i);
+            end
+            temp=ht.get(curVal);
+            if length(temp)==0,
+                h(i)=nan;
+            else
+                h(i)=temp;
+            end
+        end
+    case 'val' % return a value for an index  
+        idx=varargin{1};
+        idxList=ht.values;
+        idxArray=idxList.toArray;
+        for i=1:length(idxArray),
+            I(i)=idxArray(i);
+        end
+        for k=1:length(idx),
+            J(k)=find(I==idx(k));
+        end
+        valList=ht.keySet;
+        valArray=valList.toArray;
+        for j=1:length(J),
+            double_info = true;
+            if(strcmp(class(valArray(J(j))
+            h(j)=valArray(J(j));
+        end
+    otherwise
+        error(['Operation not defined:' oper ]);
+end
