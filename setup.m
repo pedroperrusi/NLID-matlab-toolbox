@@ -12,5 +12,8 @@ cd ../../
 addpath(nlid_path);
 addpath(utility_path);
 
+% Supress deprecated functions warnings (temporary measure)
+supress_warnings
+
 disp('Set up done')
 
