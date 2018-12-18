@@ -1,13 +1,19 @@
-function ws = wseries (wb);
+function ws = wseries (wb)
 % Generate Wiener kernels for Wiener-Bose model
 
 % Copyright 1999-2003, Robert E Kearney and David T Westwick
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see ../copying.txt and ../gpl.txt 
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see ../copying.txt and ../gpl.txt
 
-impulse = [1;zeros(wb.NLags-1,1)];
-basis = laguerre(impulse,wb.NFilt,wb.Alpha,1);
-coeff=wb.Coef;
+NLags = get_nl(wb,'NLags');
+NFilt = get_nl(wb,'NFilt');
+Alpha = get_nl(wb,'alpha');
+coeff = get_nl(wb,'OrderMax');
+
+impulse = [1;zeros(NLags-1,1)];
+error('Laguerre function not implemented. Breaking.')
+
+basis = laguerre(impulse,NFilt,Alpha,1);
 ws=wseries;
 k0=0;
 k1 = gen_kern(basis,coeff,1);
@@ -23,4 +29,4 @@ return
 
 
 
-  
+

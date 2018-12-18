@@ -4,37 +4,37 @@ function pc = nlident (pc,z,  varargin)
 
 % $Revision: 1.7 $
 % Copyright 2003, Robert E Kearney and David T Westwick
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see ../copying.txt and ../gpl.txt 
-if nargin < 2,
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see ../copying.txt and ../gpl.txt
+if nargin < 2
     disp('nlident takes two inputs for pcascade objects: pcasacde, Z' );
-elseif nargin > 2,
+elseif nargin > 2
     set(pc,varargin)
 end
 
-if isa(z,'nldat') | isa(z,'double')
+if isa(z,'nldat') || isa(z,'double')
     
     if isa(z,'nldat')
-        Ts=get(z,'DomainIncr');
-    else  
-        subsys = get(pc,'elements');
+        Ts=get_nl(z,'DomainIncr');
+    else
+        subsys = get_nl(pc,'elements');
         f1 = bank{1,1};
-        Ts = get(f1,'domainincr');
+        Ts = get_nl(f1,'domainincr');
         z = nldat(z,'domainincr',Ts);
-    end   
+    end
     
     
-    method = lower(get(pc,'method'));
+    method = lower(get_nl(pc,'method'));
     switch method
-        case 'eig'      
+        case 'eig'
             pc = pcm_eigen(pc,z,0);
-        case 'gen_eig'      
-            pc = pcm_eigen(pc,z,1);      
-        case 'slice'      
+        case 'gen_eig'
+            pc = pcm_eigen(pc,z,1);
+        case 'slice'
             pc = pcm_slice(pc,z);
-	  case {'lm','sls'}
-	    pc = pcm_nlls(pc,z);
-        otherwise 
+        case {'lm','sls'}
+            pc = pcm_nlls(pc,z);
+        otherwise
             error('unsupported method');
     end
     
@@ -46,7 +46,7 @@ elseif isa(z,'nlm')
     ztype = lower(class(z));
     error('transformation from nlm to pcascade not yet implemented');
     
-else 
+else
     error('second argument must be a nldat object or a model with parent nlm');
 end
 
@@ -65,9 +65,9 @@ y = z(:,2);
 yest = 0*y;
 zsize = size(z);
 N = zsize(1);
-hlen = get(pc,'NLags');
+hlen = get_nl(pc,'NLags');
 
-P = get(pc,'parameters');
+P = get_nl(pc,'parameters');
 assign(P);
 
 path = lnbl;
@@ -81,14 +81,14 @@ path = nlident(path,ur);
 
 
 % check path for significance
-% if polynomial order = 0 minimizes the MDL, then 
+% if polynomial order = 0 minimizes the MDL, then
 % the linear dynamics are not significant.
 
-subsys = get(path,'elements');
+subsys = get_nl(path,'elements');
 h = subsys{1};
 m = subsys{2};
 
-order = get(m,'order');
+order = get_nl(m,'order');
 if order > 0
     % path is significant, so include
     yest = nlsim(path,u);
@@ -119,10 +119,10 @@ while ~finished
     path = nlident(path,ur);
     
     
-    subsys = get(path,'elements');
+    subsys = get_nl(path,'elements');
     h = subsys{1};
     m = subsys{2};
-    order = get(m,'order');
+    order = get_nl(m,'order');
     if order < 1
         finished = 1;
     else
@@ -141,9 +141,9 @@ while ~finished
             num_paths = num_paths + 1;
         else
             finished = 1;
-        end  
+        end
     end
-    if num_paths == NPaths;
+    if num_paths == NPaths
         finished=1;
     end
 end
@@ -155,31 +155,20 @@ return
 function pc = pcm_slice(pc,z)
 % parallel cascade identification using single slices (original method).
 
-
-
-
-P = get(pc,'parameters');
+P = get_nl(pc,'parameters');
 assign(P);
 
-
-
-Ts = get(z,'domainincr');
-
+Ts = get_nl(z,'domainincr');
 
 path = lnbl;
 set(path,'NLags',NLags,'OrderMax',OrderMax,'method','bussgang');
 
-
-
-subsys = get(path,'elements');
+subsys = get_nl(path,'elements');
 h = subsys{1};
 m = subsys{2};
 set(h,'domainincr',Ts,'NLags',NLags);
 set(m,'OrderMax',OrderMax','type','tcheb');
 set(path,'elements',{h m});
-
-
-
 
 u = z(:,1);
 y = z(:,2);
@@ -187,9 +176,8 @@ resid = y;
 zsize = size(z);
 N = zsize(1);
 
-
-% Threshold for rejecting insingificant paths 
-% expressed in tersm of Percent VAF -- hence 400 instead of 4 
+% Threshold for rejecting insingificant paths
+% expressed in tersm of Percent VAF -- hence 400 instead of 4
 % in the numerator
 if lower(TestPaths(1)) == 'y'
     TestSignificance = 1;
@@ -197,8 +185,6 @@ if lower(TestPaths(1)) == 'y'
 else
     TestSignificance = 0;
 end
-
-
 
 % Initialize the model
 num_paths = 0;
@@ -216,7 +202,7 @@ while ~finished
             set(path,'initialization','slice2');
         case 3
             set(path,'initialization','slice3');
-        otherwise 
+        otherwise
             error('OOPS -- this error message should never get triggered');
     end
     ur = cat(2,u,resid);
@@ -228,11 +214,11 @@ while ~finished
         if vf < Threshold
             Significant = 0;
         end
-    end    
+    end
     if Significant
         % add the path to the model
         num_paths = num_paths + 1;
-        elements = cat(1,elements,get(path,'elements'));
+        elements = cat(1,elements,get_nl(path,'elements'));
         set(pc,'elements',elements,'NPaths',num_paths);
         yest = nlsim(pc,u);
         resid = y - yest;
@@ -249,10 +235,11 @@ end
 
 return
 
+%{
 function no_outputs = never_called(no_inputs)
 
 
-if nargin>2,
+if nargin>2
     set(pc,varargin);
 end
 if isa(z,'lnl')
@@ -260,24 +247,24 @@ if isa(z,'lnl')
 end
 
 [nsamp,nchan,nreal]=size(z);
-numlags=get(pc,'NLags');
-if isnan(numlags),
+numlags=get_nl(pc,'NLags');
+if isnan(numlags)
     numlags=min(64, nsamp/10);
 end
 zd=double(z);
 u = zd(:,1,:);
 y = zd(:,2,:);
 N = length(u);
-incr=get(z,'domainincr');
+incr=get_nl(z,'domainincr');
 %
 % First Order path
 %
 resid = y;
-order=get(pc,'POrderMax');
+order=get_nl(pc,'POrderMax');
 [h,m,outsum] = wiener_1(u,resid,numlags,order,'a');
 hirf=irf;
 set (hirf, 'data',h,'Nlags',numlags,'domainincr',incr);
-mt= polynom; 
+mt= polynom;
 set (mt,'type','power');
 set (mt,'Range',m(1:2),'Coef',m(3:length(m)));
 elements = { hirf mt };
@@ -293,8 +280,8 @@ else
     disp('no significant first order path');
     disp(vaf(y,outsum));
 end
-numpaths=get(pc,'NPaths');
-tol=get(pc,'PTolerance');
+numpaths=get_nl(pc,'NPaths');
+tol=get_nl(pc,'PTolerance');
 for pathnum = next_path:numpaths
     [h,m,out] = wiener_2(u,resid,numlags,order,'a');
     hirf=irf; set (hirf, 'data',h,'NLags',numlags,'domainincr',incr);
@@ -309,9 +296,9 @@ for pathnum = next_path:numpaths
     disp(['Path ' num2str(pathnum) ' identified']);
     disp (['   VAF Path = ' num2str(vaf_path)]);
     disp (['   VAF Total = ' num2str(vaf_total)]);
-    if vaf_path < tol,
+    if vaf_path < tol
         disp (['VAF Path = ' num2str(vaf_path)]);
-        disp ([ 'VAF Path < tol. iteration terminated']);
+        disp ( 'VAF Path < tol. iteration terminated');
         pathnum=pathnum-1;
         break
     end
@@ -320,4 +307,4 @@ end
 set(pc,'Elements',elements);
 set(pc,'Nlags',numlags,'NPaths',pathnum);
 return
-
+%}

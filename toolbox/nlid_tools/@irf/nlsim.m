@@ -7,29 +7,29 @@ function y = nlsim ( model, xin )
 % This file is part of the nlid toolbox, and is released under the GNU 
 % General Public License For details, see ../copying.txt and ../gpl.txt 
 
-filter = get(model,'data');
-if isa(xin,'double'),
+filter = get_nl(model,'data');
+if isa(xin,'double')
     xin=nldat(xin);
     set(xin,'domainincr',get(model,'domainincr'));
 end
-delx = get(xin,'domainincr');
-deli=get(model,'domainincr');
-if delx ~= deli,
-    W=(str2mat('Model & data have different domain increments', ...
+delx = get_nl(xin,'domainincr');
+deli=get_nl(model,'domainincr');
+if delx ~= deli
+    W=(char('Model & data have different domain increments', ...
         'the output of the IRF depends on the sampling rate', ...
         'Output may be scaled incorrectly and/or have the wrong increment'));
     warning(' ');disp(W)
 end
 x=double (xin);
 
-incr = get (model,'domainincr');
-P=get(model,'parameters');
+incr = get_nl(model,'domainincr');
+P=get_nl(model,'parameters');
 assign(P);
 %
 % Simulate a time-varying response
 %
-if strcmp(TV_Flag,'Yes'),
-   if NSides==1,
+if strcmp(TV_Flag,'Yes')
+   if NSides==1
        sides='one';
    else
        sides='two';
@@ -50,8 +50,8 @@ else
   x=x(:,1);  
     
     [nsamp, nchan,nreal]= size(filter);
-    for i=1:nchan,
-        for j=1:nreal,
+    for i=1:nchan
+        for j=1:nreal
             yout(:,i,j) = filter_ts(filter(:,i,j), x, NSides, incr);
         end
     end

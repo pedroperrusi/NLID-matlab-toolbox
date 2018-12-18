@@ -1,4 +1,4 @@
-function  phi = phix3y(x,y,hlen);
+function  phi = phix3y(x,y,hlen)
 %  third-order cross-correlation function
 %
 %  Syntax:  phi = phix3y(x,y,hlen);

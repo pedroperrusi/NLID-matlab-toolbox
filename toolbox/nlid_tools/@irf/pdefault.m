@@ -1,11 +1,11 @@
-function IOut = pdefault(IIn);
+function IOut = pdefault(IIn)
 % set default parameters for irfs
 
 % Copyright 2003, Robert E Kearney and David T Westwick
 % This file is part of the nlid toolbox, and is released under the GNU 
 % General Public License For details, see ../copying.txt and ../gpl.txt 
 
-p=get(IIn,'parameters');
+p=get_nl(IIn,'parameters');
 j=size(p);
 p(j+1)=param('name','DisplayFlag','default','true','help','display');
 p(j+2)=param('name','Level','default',95,'help','error level');

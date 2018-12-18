@@ -4,13 +4,13 @@ function Out = set(sys,varargin)
 %   SET(SYS,'Property',VALUE)  sets the property of SYS specified
 %   by the string 'Property' to the value VALUE.
 %
-%   SET(SYS,'Property1',Value1,'Property2',Value2,...)  sets multiple 
+%   SET(SYS,'Property1',Value1,'Property2',Value2,...)  sets multiple
 %   LTI property values with a single statement.
 %
 %   SET(SYS,'Property')  displays possible values for the specified
 %   property of SYS.
 %
-%   SET(SYS)  displays all properties of SYS and their admissible 
+%   SET(SYS)  displays all properties of SYS and their admissible
 %   values.
 %
 %
@@ -21,7 +21,7 @@ function Out = set(sys,varargin)
 %       Copyright (c) 1986-98 by The MathWorks, Inc.
 %       $Revision: 1.2 $ $Date: 2003/06/13 16:13:01 $
 
-% 2001 05 22 rek handle recurrsive calls 
+% 2001 05 22 rek handle recurrsive calls
 % handle case where nargin is compressed
 [ni, varargin] = varg (nargin, varargin) ;
 
@@ -104,33 +104,33 @@ for i=1:2:ni-1,
         Value = varargin{i+1};
         
         switch Property
-        case 'domainincr'
-            sys.DomainIncr = Value;
-        case 'elements'
-            sys.Elements = Value ;
-        case 'inputname'
-            sys.InputName = Value;
-        case 'notes'
-            sys.Notes = Value;
-        case 'outputname'
-            sys.OutputName = Value;
-            
-        case 'parameters'
-            if isa (Value,'param')
-                % Value is param class so set 
-                sys.Parameters = Value;
-            elseif isa (Value,'cell')
-                % Vale is cell array so set values
-                sys.Parameters = setval(sys.Parameters,Value) ;
-            else
-                error (' nlm: Parameter must be class param or cell');
-            end
-        otherwise
-            N=sys.nltop;
-            set(N,Property,Value);
-            sys.nltop=N;
-            
-            
+            case 'domainincr'
+                sys.DomainIncr = Value;
+            case 'elements'
+                sys.Elements = Value ;
+            case 'inputname'
+                sys.InputName = Value;
+            case 'notes'
+                sys.Notes = Value;
+            case 'outputname'
+                sys.OutputName = Value;
+                
+            case 'parameters'
+                if isa (Value,'param')
+                    % Value is param class so set
+                    sys.Parameters = Value;
+                elseif isa (Value,'cell')
+                    % Vale is cell array so set values
+                    sys.Parameters = setval(sys.Parameters,Value) ;
+                else
+                    error (' nlm: Parameter must be class param or cell');
+                end
+            otherwise
+                N=sys.nltop;
+                set_nl(N,Property,Value);
+                sys.nltop=N;
+                
+                
         end % switch
         
     end

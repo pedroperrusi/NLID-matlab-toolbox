@@ -23,7 +23,7 @@ if nargin<2  || isempty(U)
     incr=0.01;
     U=nldat(u,'domainincr',incr);
 else
-    incr=get(U,'domainincr');
+    incr=get_nl(U,'domainincr');
 end
 if nargin==0 || isempty(option)
     opts = { 'L1'; 'L2' ; 'LNRect'; 'LN2'; 'LN3'; 'N3L'; 'N2L'; ...

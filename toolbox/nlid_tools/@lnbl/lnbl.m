@@ -3,22 +3,18 @@ function LN  = lnbl (z, varargin)
 % Parent: nlm
 
 % Copyright 2003, Robert E Kearney and David T Westwick
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see ../copying.txt and ../gpl.txt 
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see ../copying.txt and ../gpl.txt
 
 LN=mklnbl;
-if nargin==0;
-   return
-elseif nargin==1,
-  LN=nlmkobj(LN,z);
+if nargin==0
+    return
+elseif nargin==1
+    LN=nlmkobj(LN,z);
 else
-   args=varargin;
-   LN=nlmkobj(LN,z,args);
+    args=varargin;
+    LN=nlmkobj(LN,z,args);
 end
-
-
-
-% lnbl/lnbl
 
 function bl = mklnbl
 S=nlm;

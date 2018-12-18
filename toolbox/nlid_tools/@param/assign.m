@@ -3,7 +3,7 @@ function assign (p)
 n=length(p);
 for i=1:length(p)
    name=p.Name{i};
-   val=value(p,i);
+   val=getvalue(p,i);
    assignin('caller',name,val)
 end
 

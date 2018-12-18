@@ -2,7 +2,7 @@ function disp(n)
 % display an nltop object
 C=class(n);
 disp([ C ' object']);
-get(n)
+get_nl(n)
 return
 
 % Copyright 1999-2003, Robert E Kearney

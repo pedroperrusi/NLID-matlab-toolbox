@@ -26,11 +26,11 @@ function Out = set(sys,varargin)
 % handle case where nargin is compressed
 [ni, varargin] = varg (nargin, varargin) ;
 no = nargout;
-if ~isa(sys,'nldat'),
+if ~isa(sys,'nldat')
    % Call built-in SET. Handles calls like set(gcf,'user',ss)
    builtin('set',sys,varargin{:});
    return
-elseif no & ni>2,
+elseif no && ni>2
    error('Output argument allowed only in SET(SYS) or SET(SYS,Property)');
 end
 
@@ -42,26 +42,26 @@ if ni>1,  flag = 'lower';  else flag = 'true';  end
 
 
 % Handle read-only cases
-if ni==1,
+if ni==1
    % SET(SYS) or S = SET(SYS)
-   if no,
+   if no
       Out = cell2struct(AsgnValues,AllProps,1);
    else
       pvdisp(AllProps,AsgnValues)
    end
    return
    
-elseif ni==2,
+elseif ni==2
    % SET(SYS,'Property') or STR = SET(SYS,'Property')
    Property = varargin{1};
-   if ~isstr(Property),
+   if ~ichar(Property)
       error('Property names must be single-line strings,')
    end
    
    % Return admissible property value(s)
    [imatch,status] = pmatch(AllProps,Property);
    error(status)
-   if no,
+   if no
       Out = AsgnValues{imatch};
    else
       disp(AsgnValues{imatch})
@@ -73,13 +73,13 @@ end
 
 % Now left with SET(SYS,'Prop1',Value1, ...)
 name = inputname(1);
-if isempty(name),
+if isempty(name)
    error('First argument to SET must be a named variable.')
-elseif rem(ni-1,2)~=0,
+elseif rem(ni-1,2)~=0
    error('Property/value pairs must come in even number.')
 end
 
-for i=1:2:ni-1,
+for i=1:2:ni-1
    % Set each PV pair in turn
    [imatch,status] = pmatch(AllProps,varargin{i});
    error(status)
@@ -98,7 +98,7 @@ for i=1:2:ni-1,
    case 'domainstart'
       sys.DomainStart = Value;
    case 'domainvalues'
-      if iscell(Value),
+      if iscell(Value)
          sys.DomainValues = Value;
       else
          sys.DomainValues = double(Value);
@@ -112,7 +112,7 @@ for i=1:2:ni-1,
 
 otherwise
    N=sys.nltop;
-      set(N,Property,Value);
+      set_nl(N,Property,Value);
       sys.nltop=N;
    end % switch
 end % for

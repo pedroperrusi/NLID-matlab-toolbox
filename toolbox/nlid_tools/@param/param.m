@@ -6,7 +6,7 @@ function P = param(a,varargin)
 % This file is part of the nlid toolbox, and is released under the GNU
 % General Public License For details, see ../copying.txt and ../gpl.txt
 
-P=mkparam;
+P = mkparam;
 if nargin==0
     return
 elseif nargin==1
@@ -16,7 +16,7 @@ else
     set(P,args);
 end
 
-function P=mkparam
+function P = mkparam
 P.Default={ NaN } ;
 P.Help={'Help'};
 P.Limits={'Limit values'};

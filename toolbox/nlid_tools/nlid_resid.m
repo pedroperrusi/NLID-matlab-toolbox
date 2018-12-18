@@ -1,26 +1,26 @@
-function [R, V, yp] = nlid_resid( M, z, p);
+function [R, V, yp] = nlid_resid( M, z, p)
 % computes and displays prediction error in model output.
 
 
 % Copyright 2003, Robert E Kearney and David T Westwick
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see copying.txt and gpl.txt 
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see copying.txt and gpl.txt
 
-if isa(M,'polynom');
-   nin=get(M,'NInputs');
-   x=z(:,1:nin);
-   y=z(:,nin+1);
+if isa(M,'polynom')
+    nin=get_nl(M,'NInputs');
+    x=z(:,1:nin);
+    y=z(:,nin+1);
 else
-   x=z(:,1);
-   y=z(:,2);
-   
+    x=z(:,1);
+    y=z(:,2);
+    
 end
 
 yp= nlsim(M,x);
 R=y-yp;
 V=vaf(y,yp);
 if (nargin > 2)
-	return
+    return
 end
 
 subplot (4,1,1);

@@ -1,4 +1,4 @@
-function phi = corx2y(x,y,hlen);
+function phi = corx2y(x,y,hlen)
 % Second-Order Cross-Correlation Function
 %
 % Syntax:  phi = corx2y(x,y,hlen)
@@ -6,8 +6,8 @@ function phi = corx2y(x,y,hlen);
 
 
 % Copyright 2003, Robert E Kearney and David T Westwick
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see ../../copying.txt and ../../gpl.txt 
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see ../../copying.txt and ../../gpl.txt
 
 
 disp('If you are seeing this message, the nlid toolbox MEX files');
