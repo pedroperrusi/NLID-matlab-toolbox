@@ -1,0 +1,6 @@
+.multicomplete-token:after {
+  content: ",";
+}
+.separator:after {
+  content: ",";
+}

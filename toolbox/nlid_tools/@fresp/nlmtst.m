@@ -1,15 +1,15 @@
-function fs=nlmtst(fresp)
-% fs=nlmtst(fresp) test identification from data
-% $Revision: 1.3 $
+function fs = nlmtst(fresp)
+% fs = nlmtst(fresp) test identification from data
+% $Revision: 1.4 $
 % Copyright 2003, Robert E Kearney and David T Westwick
 % This file is part of the nlid toolbox, and is released under the GNU 
 % General Public License For details, see ../copying.txt and ../gpl.txt 
 
-z=nlid_sim ('L1');
-set(z,'comment','Low pass data set');
+z = nlid_sim ('L1');
+set(z,'comment','Low pass nldat data set');
 figure(1);
 plot (z); 
-fs=fresp(z);
+fs = fresp(z);
 figure(2)
 plot(fs);
 

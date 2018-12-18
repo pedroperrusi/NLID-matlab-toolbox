@@ -23,7 +23,7 @@ mex -c matrix_ref.c
 mex corx2y.c
 
 % check for legacy OS that requires 8.3 filenames
-if strcmp(lower(computer),'pcwin')
+if strcmpi(computer,'pcwin64')
   mex corx3y.c matrix_ref.obj
   mex fast_pmpr.c matrix_ref.obj
 else
@@ -68,12 +68,15 @@ switch lower(computer)
     !mv corx2y.mexaxp ../../@cor/private
     !mv corx3y.mexaxp ../../@cor/private
     !mv fast_pmpr.mexaxp ../../@vseries/private 
-  case 'pcwin'
+  case 'pcwin64'
+    !move corx2y.mexw64 corx2y.dll  
+    !move corx3y.mexw64 corx3y.dll  
+    !move fast_pmpr.mexw64 fast_pmpr.dll  
     !move corx2y.dll ..\..\@cor\private
     !move corx3y.dll ..\..\@cor\private
     !move fast_pmpr.dll ..\..\@vseries\private 
   otherwise    
-    disp('unrecognized OS')'
+    disp('unrecognized OS')
     disp('Move MEX files manually');
 end
 

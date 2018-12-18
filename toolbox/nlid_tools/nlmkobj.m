@@ -9,11 +9,11 @@ function O = nlmkobj ( obj, z, arg )
 % General Public License For details, see copying.txt and gpl.txt 
 
 objclass=class (obj);
-if isa (z,objclass),
+if isa (z,objclass)
    % First argument is object;
    O=z;
-   if nargin==3,
-      if isa(arg{1},'nldat') | isa(arg{1},'double'),
+   if nargin==3
+      if isa(arg{1},'nldat') || isa(arg{1},'double')
          % Second Argument is nldata do identification
          O=nlident (O,arg{1},arg{2:end});
       else
@@ -24,7 +24,7 @@ if isa (z,objclass),
 else
    % First argument is nldat - ;
    O=obj;
-   if nargin==2,
+   if nargin==2
       O=nlident(O, z);
    else
      

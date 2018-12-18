@@ -1,0 +1,319 @@
+setTimeout(function() {
+
+  (function(window) {
+    function triggerCallback(e, callback) {
+      if (!callback || typeof callback !== 'function') {
+        return;
+      }
+      var files;
+      if (e.dataTransfer) {
+        files = e.dataTransfer.files;
+      } else if (e.target) {
+        files = e.target.files;
+      }
+    }
+
+    var validation_errors = {
+      _errors: [],
+      errors: function() {
+        return this._errors
+      },
+    }
+
+    function makeDroppable(ele, callback) {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('multiple', true);
+      input.setAttribute('class', 'fileUpload');
+      input.style.display = 'none';
+      input.addEventListener('change', function(e) {
+        triggerCallback(e, callback);
+      });
+      ele.appendChild(input);
+
+      ele.addEventListener('dragover', function(e) {
+        ele.style.opacity = 0.4;
+        e.preventDefault();
+        e.stopPropagation();
+        ele.classList.add('dragover');
+      });
+
+      ele.addEventListener('dragleave', function(e) {
+        ele.style.opacity = 1;
+        e.preventDefault();
+        e.stopPropagation();
+        ele.classList.remove('dragover');
+      });
+
+      ele.addEventListener('drop', function(e) {
+        ele.style.opacity = 1;
+        e.preventDefault();
+        e.stopPropagation();
+        ele.classList.remove('dragover');
+        triggerCallback(e, callback);
+      });
+
+      var dropArea = $('.rtc_editor_with_toolstrip');
+
+      $('.rtc_editor_with_toolstrip').fileupload({
+        replaceFileInput: false,
+        singleFileUploads: false,
+        dataType: "json",
+        type: "POST",
+        url: "/matlabcentral/answers/uploaded_files",
+        dropZone: dropArea,
+        pasteZone: null,
+        submit: function(event, data) {
+          var formData = {},
+            form = $(this).closest("form");
+          csrfToken = form.find("input[name=authenticity_token]");
+          if (csrfToken.length === 1) {
+            formData.authenticity_token = csrfToken.val();
+          }
+          data.formData = formData;
+        },
+        add: function(event, data) {
+          var files = data.files;
+
+          validated_data = validateFile(data);
+
+          if (validated_data.get_errors()) {
+            var form = $(this).closest("form");
+            var errors = $(form).find('div.upload_errors');
+            errors.hide();
+
+            displayErrorMessages($(this), validation_errors.errors());
+
+          }
+
+          data = validated_data.get_data();
+
+          if (validated_data.get_success()) { // this line handles condition if not even a single success, then do not call jqxhr.submit
+            var jqXHR = data.submit();
+          }
+        },
+
+
+        always: function(event, data) {
+          var response = new UploadResponse(data);
+          var form = $(this).closest("form");
+          var errors = $(form).find('div.upload_errors');
+          if (validation_errors.errors().length == 0) {
+            errors.hide();
+          }
+
+          if (response.hasErrors()) {
+            if (validation_errors.errors().length > 0) {
+              var all_errors = $.merge(response.errors(), validation_errors.errors())
+              displayErrorMessages($(form), all_errors);
+            } else {
+              displayErrorMessages($(form), response.errors());
+            }
+          } else {
+            callback.call($(form), response._files);
+          }
+          validation_errors.errors().length = 0;
+          $(form).find('.fileUpload').val('');
+        },
+
+      }); //file upload ends here
+
+
+
+      var AcceptedFileExtensions = [".bmp", ".csv", ".fig", ".gif", ".jpg", ".jpeg", ".m", ".mat", ".mdl", ".mlx", ".slx", ".pdf", ".png", ".txt", ".xls", ".xlsx", ".zip"];
+      var AcceptedFileTypeRegExp = new RegExp("(" + AcceptedFileExtensions.join("|").replace(/\./g, "\\.") + ")$", "i");
+      var MaximumFileSize = 1024 * 1024 * 5;
+
+      var validateFile = function(data) {
+        validation_errors.errors().length = 0;
+        var filesData = data.files
+        var successFiles = []
+        var file_size_exceeded_files = [];
+        var unsupported_file_format = [];
+
+        var result = {
+          _new_data: data,
+          _any_errors: false,
+          _any_success: false,
+          get_data: function() {
+            return this._new_data;
+          },
+          get_errors: function() {
+            return this._any_errors;
+          },
+          get_success: function() {
+            return this._any_success;
+          }
+
+        }
+
+
+        for (fileData in filesData) {
+          if (filesData[fileData].size > MaximumFileSize) {
+            file_size_exceeded_files.push(filesData[fileData].name)
+            result._any_errors = true;
+          }
+          if (AcceptedFileTypeRegExp.test(filesData[fileData].name) === false) {
+            unsupported_file_format.push(filesData[fileData].name)
+            result._any_errors = true;
+          }
+          if (!(filesData[fileData].size > MaximumFileSize) && !(AcceptedFileTypeRegExp.test(filesData[fileData].name) === false)) {
+            successFiles.push(filesData[fileData])
+          }
+        }
+
+        if (file_size_exceeded_files.length > 0) {
+          if (file_size_exceeded_files.length == 1) {
+            validation_errors._errors.push(I18n.t("js.file_upload_errors.file_size_error.single", {file: file_size_exceeded_files.join(",")}));
+          } else {
+            validation_errors._errors.push(I18n.t("js.file_upload_errors.file_size_error.multiple", {files: file_size_exceeded_files.join(",")}));
+          }
+        }
+        if (unsupported_file_format.length > 0) {
+          if (unsupported_file_format.length == 1) {
+            validation_errors._errors.push(I18n.t("js.file_upload_errors.unsupported_format.single", {file: unsupported_file_format.join(","), accepted_formats: AcceptedFileExtensions.join(", ")}));
+          } else {
+            validation_errors._errors.push(I18n.t("js.file_upload_errors.unsupported_format.multiple", {files: unsupported_file_format.join(","), accepted_formats: AcceptedFileExtensions.join(", ")}));
+          }
+        }
+
+        if (successFiles.length > 0) {
+          result._any_success = true;
+          data.files = successFiles;
+          result._new_data = data;
+        }
+
+        return result;
+
+      };
+
+      var displayErrorMessages = function(obj, response_errors) {
+        var errors = obj.find('div.upload_errors').first();
+        if (errors.size() === 0) {
+          errors = $("<div></div>", {
+            "class": "upload_errors alert alert-danger"
+          });
+          errors.append($("<span></span>", {
+            "class": "alert_icon icon-alert-error"
+          }));
+          errors.append($("<p></p>", {
+            "class": "title"
+          }).text(I18n.t("js.file_upload_errors.error_label")));
+          errors.append($("<ul></ul>"));
+          if (obj.hasClass('question-form')) {
+            var body = obj.find('.question-body');
+            body.find('label').after($(errors));
+          } else if (obj.hasClass('answer-form') && (!obj.hasClass("create-answer-form"))) {
+            var body = obj.find('.answer-body');
+            body.find('label').after($(errors));
+          } else {
+            obj.prepend(errors);
+          }
+        }
+        errorList = errors.find("ul").first();
+        errors.show();
+        errorList.empty();
+        for (var i = 0; i < response_errors.length; i++) {
+          errorList.append($("<li class=add_text_wrapping></li>").text(response_errors[i]))
+        }
+      };
+
+      function UploadResponse(responseData) {
+        this.responseJSON = this._normalizeResponse(responseData);
+        this._errors = this.responseJSON.errors || [];
+        this._files = this.responseJSON.files || []
+      };
+      UploadResponse.prototype.errors = function() {
+        return this._errors
+      };
+      UploadResponse.prototype.hasErrors = function() {
+        return this.errors().length > 0
+      };
+      UploadResponse.prototype.eachFile = function(callback) {
+        for (var i = 0; i < this._files.length; i++) {
+          callback(this._files[i])
+        }
+      };
+      UploadResponse.prototype._normalizeResponse = function(responseData) {
+
+        if (responseData.xhr) {
+          return JSON.parse(responseData.xhr().response)
+        } else {
+          return responseData.result
+        }
+      };
+
+      window.document.querySelector('div[data-tag="motwToolstrip.liveEditorTab.insert.attachments"]').addEventListener('click', function() {
+        input.value = null;
+        input.click();
+      });
+    }
+    window.makeDroppable = makeDroppable;
+  })(this);
+
+  (function(window) {
+    var rtc_editor = window.document.querySelector('.rtc_editor_with_toolstrip');
+    makeDroppable(window.document.querySelector('.rtc_editor_with_toolstrip'), function(files) {
+      var object = this;
+      var pendingUploads = object.find('.pending-uploads');
+      if (pendingUploads.size() === 0) {
+        pendingUploads = $("<div></div>", {
+          "class": "pending-uploads"
+        });
+        if (object.hasClass('question-form')) {
+          var body = object.find('.question-body');
+          body.append($(pendingUploads));
+        } else if (object.hasClass('create-comment-form') || (object.hasClass('create-answer-form'))) {
+          if(object.find('.follow_checkbox_div').length > 0) {
+            object.find('.follow_checkbox_div').before($(pendingUploads))
+          }
+          else {
+              object.find('.rtc_editor_with_toolstrip').after($(pendingUploads));
+          }
+        } else {
+          object.find('.rtc_editor_with_toolstrip').after($(pendingUploads));
+        }
+      }
+      var pendingUploadsUl = pendingUploads.find('ul').first();
+      if (pendingUploadsUl.size() === 0) {
+        pendingUploadsUl = $("<ul></ul>", {
+          "class": "list-unstyled list-inline"
+        });
+        pendingUploads.append(pendingUploadsUl);
+      }
+
+
+      for (var i = 0; i < files.length; i++) {
+        var pendingUploadsLi = $("<li></li>");
+        var innerText = "<span>" + files[i].name + "</span> " + "<button class='btn btn-link' type='button' data-file-id='" + files[i].id + "'>" + "<span class='icon-remove icon_16 add_font_color_emphasize'></span></button>";
+        pendingUploadsLi.html(innerText);
+        pendingUploadsUl.append(pendingUploadsLi);
+
+        var fileIdInput = $("<input/>", {
+          type: "hidden",
+          name: "uploaded_files[]"
+        }).val(files[i].id);
+        var fileNameInput = $("<input/>", {
+          type: "hidden",
+          name: "uploaded_file_names[]"
+        }).val(files[i].name);
+        fileIdInput.attr("data-assoc-file-id", files[i].id);
+        fileNameInput.attr("data-assoc-file-id", files[i].id);
+        object.append(fileIdInput);
+        object.append(fileNameInput);
+      }
+
+      $('[data-file-id]').click(function() {
+        var fileId = $(this).data("file-id");
+        $('input[type="hidden"][data-assoc-file-id="' + fileId + '"]').remove();
+        var pendingUploads = $(this).closest('.pending-uploads');
+        if ($(pendingUploads).find('li').length <= 1) {
+          $(pendingUploads).remove();
+        } else {
+          $(this).parent().remove();
+        }
+      });
+
+    });
+  })(this);
+}, 5000);
