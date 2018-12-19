@@ -28,11 +28,11 @@ function Out = set(sys,varargin)
 
 
 no = nargout;
-if ~isa(sys,'nlm'),
+if ~isa(sys,'nlm')
     % Call built-in SET. Handles calls like set(gcf,'user',ss)
     builtin('set',sys,varargin{:});
     return
-elseif no & ni>2,
+elseif no && ni>2
     error('Output argument allowed only in SET(SYS) or SET(SYS,Property)');
 end
 
@@ -45,26 +45,26 @@ AsgnValues = pnv(sys,'avalues');
 
 
 % Handle read-only cases
-if ni==1,
+if ni==1
     % SET(SYS) or S = SET(SYS)
-    if no,
+    if no
         Out = cell2struct(AsgnValues,AllProps,1);
     else
         pvdisp(AllProps,AsgnValues)
     end
     return
     
-elseif ni==2,
+elseif ni==2
     % SET(SYS,'Property') or STR = SET(SYS,'Property')
     Property = varargin{1};
-    if ~isstr(Property),
+    if ~ischar(Property)
         error('Property names must be single-line strings,')
     end
     
     % Return admissible property value(s)
     [imatch,status] = pmatch(AllProps,Property);
     error(status)
-    if no,
+    if no
         Out = AsgnValues{imatch};
     else
         disp(AsgnValues{imatch})
@@ -76,22 +76,22 @@ end
 
 % Now left with SET(SYS,'Prop1',Value1, ...)
 name = inputname(1);
-if isempty(name),
+if isempty(name)
     error('First argument to SET must be a named variable.')
-elseif rem(ni-1,2)~=0,
+elseif rem(ni-1,2)~=0
     error('Property/value pairs must come in even number.')
 end
 
-for i=1:2:ni-1,
+for i=1:2:ni-1
     % Set each PV pair in turn
     % See if it is a parameter value, if so set it
     P=sys.Parameters;
     j=pindex(P,varargin{i});
-    if j>0,
+    if j>0
         P=setval(P,varargin{i},varargin{i+1});
         sys.Parameters=P;
         % If method changes then reset default parameters
-        if strcmp('method',char(varargin(i))),
+        if strcmp('method',char(varargin(i)))
             sys=pdefault(sys);
         end
     else

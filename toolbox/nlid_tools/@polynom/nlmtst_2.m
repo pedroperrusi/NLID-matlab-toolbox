@@ -1,5 +1,5 @@
 function p = nlmtst_2(p)
-% nltst for power series
+% nlmtst for power series
 % SISO
 F=1;
 T=get_nl(p,'type');

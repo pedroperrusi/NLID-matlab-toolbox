@@ -4,11 +4,10 @@ function I=nlmtst(i)
 %
 
 % Copyright 2003, Robert E Kearney and David T Westwick
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see ../copying.txt and ../gpl.txt 
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see ../copying.txt and ../gpl.txt
 
-% one sided first
-%
+% One-sided
 delete(get(0,'children'));
 z=nlid_sim ('L1');
 figure(1);
@@ -17,18 +16,16 @@ plot(i)
 figure(2);
 r1=nlid_resid(i,z);
 title('Residuals');
-%
-% two size
-%
+
+% Two-sided
 z1=nldat;
 z1(:,1)=z(:,2);
 z1(:,2)=z(:,1);
 i1=irf(z1,'nsides',2,'nlags',50);
 figure(3);
 plot(i1)
-%
-% output 
-%
+
+% Output
 I={i i1};
 
 % % test time varying IRF
@@ -37,7 +34,7 @@ I={i i1};
 % x=randn(100,75);
 % y=smo(x,3);
 % y(51:100,:)=10*y(51:100,:);
-% 
+%
 % %
 % % Now test nlid tools
 % %

@@ -10,6 +10,9 @@ Ts = get_nl(C,'domainincr');
 c=get_nl(C,'data');
 t=domain(C);
 tlim=[ min(t) max(t)];
+if min(t) == max(t) % Error case handling when limits are equal
+    tlim(2) = tlim(1)+1;
+end
 switch Order
     case 0
         handle = stem(c,'filled');

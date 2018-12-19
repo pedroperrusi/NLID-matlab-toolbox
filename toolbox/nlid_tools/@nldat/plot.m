@@ -121,7 +121,11 @@ else
             else
                 plot (t,xd);
             end
-            ylabel(names{i});
+            try
+                ylabel(names{i});
+            catch
+                ylabel(names)
+            end
             if strcmp(xmode,'log')
                 xlabel([ 'Log ' d.DomainName]);
             else

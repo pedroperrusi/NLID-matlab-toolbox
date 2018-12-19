@@ -11,10 +11,11 @@ Alpha = get_nl(wb,'alpha');
 coeff = get_nl(wb,'OrderMax');
 
 impulse = [1;zeros(NLags-1,1)];
-error('Laguerre function not implemented. Breaking.')
+ws=wseries;
+warning('Laguerre function not implemented. Breaking.')
+return
 
 basis = laguerre(impulse,NFilt,Alpha,1);
-ws=wseries;
 k0=0;
 k1 = gen_kern(basis,coeff,1);
 k2 = gen_kern(basis,coeff,2);

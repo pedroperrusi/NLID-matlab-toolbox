@@ -3,17 +3,17 @@ function P = polynom (z, varargin)
 %  Parent: nltop
 
 % Copyright 2003, Robert E Kearney
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see ../copying.txt and ../gpl.txt 
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see ../copying.txt and ../gpl.txt
 
 P=mkpoly;
-if nargin==0;
-   return
-elseif nargin==1,
-   P=nlmkobj(P,z);
+if nargin==0
+    return
+elseif nargin==1
+    P=nlmkobj(P,z);
 else
-   args=varargin;
-   P=nlmkobj(P,z,args);
+    args=varargin;
+    P=nlmkobj(P,z,args);
 end
 
 

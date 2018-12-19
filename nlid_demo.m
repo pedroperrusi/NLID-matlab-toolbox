@@ -33,7 +33,7 @@ pltflg=0;
 [z,M]=nlid_sim (model_type,x,pltflg);
 
 
-%% Henerate noisey output measure
+%% Generate noisey output measure
 y=double(z(:,2));
 noise=randn(length(y),1);
 scale=sqrt(nlevel*cov(y)/cov(noise));
@@ -54,14 +54,14 @@ i=irf;
 i=nlident(i,z,'NLags',numlags);
 demo_plot(i,z,' ');
 
-%% Fit a ln model
+%% Fit an ln model
 comment='LN Model';
 disp(comment);
 ln=lnbl;
 ln=nlident(ln,z, 'NLags',numlags);
 demo_plot(ln,z,' ');
 
-%% nl model
+%% Nl model
 comment='NL Model';
 disp(comment);
 nl=nlbl(z,'Nlags',numlags);
@@ -98,13 +98,12 @@ vk=vseries(z,'NLags',20);
 set(vk,'comment',comment)
 demo_plot(vk,z,' ');
 
-%% Wiener kernel (WB ) %
+%% Wiener kernel (WB )
 comment='Wiener Bose (Laguerre) Model';
 disp(comment);
 wb=wbose(z,'Nlags',32,'Nfilt',10,'OrderMax',2);
 demo_plot(wb,z,' ');
 disp('Done');
-
 
 function demo_plot (model, z, comment)
 ans='y';
@@ -140,5 +139,5 @@ ans=input_l('Continue',ans);
 if ans
     return
 else
-    error('quit'); 
+    error('quit');
 end

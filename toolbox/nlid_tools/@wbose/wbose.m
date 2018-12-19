@@ -4,15 +4,15 @@ function WB = wbose (z, varargin)
 
 
 % Copyright 1999-2003, Robert E Kearney and David T Westwick
-% This file is part of the nlid toolbox, and is released under the GNU 
-% General Public License For details, see ../copying.txt and ../gpl.txt 
+% This file is part of the nlid toolbox, and is released under the GNU
+% General Public License For details, see ../copying.txt and ../gpl.txt
 
 WB=mkwb;
 
 
-if nargin==0;
+if nargin==0
     return
-elseif nargin==1,
+elseif nargin==1
     WB=nlmkobj(WB,z);
 else
     args=varargin;
@@ -20,8 +20,8 @@ else
 end
 
 
-function wb =mkwb;
-% Structure of WeinerBose modelseries
+function wb =mkwb
+% Structure of WienerBose modelseries
 N=nlm;
 wb.ObjType='wbose';
 bank = cell(1,1);

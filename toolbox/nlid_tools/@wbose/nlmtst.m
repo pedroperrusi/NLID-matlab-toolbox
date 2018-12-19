@@ -1,6 +1,6 @@
 function wb=nlmtst(i)
 %
-% test of vseries identification
+% test of wbose identification
 %
 
 % Copyright 1999-2003, Robert E Kearney and David T Westwick
