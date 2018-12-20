@@ -5,6 +5,7 @@ function nlid_demo (model_type, xin, noise_level)
 %					 default value is 'LN2';
 %
 
+clc
 
 % Copyright 2003, Robert E Kearney and David T Westwick
 % This file is part of the nlid toolbox, and is released under the GNU
@@ -104,6 +105,7 @@ disp(comment);
 wb=wbose(z,'Nlags',32,'Nfilt',10,'OrderMax',2);
 demo_plot(wb,z,' ');
 disp('Done');
+end
 
 function demo_plot (model, z, comment)
 ans='y';
@@ -131,13 +133,10 @@ axis([ -inf inf min(xd) max(xd)]);
 disp(['Vaf =' num2str(double(vf))]);
 title('Residuals');
 demo_pause
-return
+end
 
 function demo_pause
-ans=1;
-ans=input_l('Continue',ans);
-if ans
-    return
-else
-    error('quit');
+if ~input_l('Continue?',1)
+    error('Quit demo.');
+end
 end

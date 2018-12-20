@@ -13,8 +13,10 @@ cd ../../
 addpath(nlid_path);
 addpath(utility_path);
 
-disp('Compiling and installing mex files.')
+if input_l('Recompile MEX files?')
+disp('Compiling and installing MEX files.')
 install_nlid_mexfiles;
+end
 
 disp('Setup complete.')
 
