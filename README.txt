@@ -26,20 +26,47 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 CONTENTS
 
-The archive should contain 3 subdirectories
+The archive should contain 2 directories, "toolbox" and "references". 
+"References" has two subdirectories:
 
 nlid_book
-  nlid_book/examples -- contains the code used to generate figures in
-  Westwick and Kearney, 2003.
+	nlid_book/examples -- contains the code used to generate figures in
+	Westwick and Kearney, 2003.
 
-  nlid_book/problems -- contains solutions to all of the computer
-  exercises in Westwick and Kearney, 2003.
+	nlid_book/problems -- contains solutions to all of the computer
+	exercises in Westwick and Kearney, 2003.
+  
+nlid_docs
+	contains a legacy manual and slides from a lecture that explain some functionality of the toolbox.
 
-nlid_tools -- contains the nlid toolbox routines.
+"Toolbox" has two subdirectories:
+	
+	nlid_tools -- contains the nlid toolbox routines.
 
-utility_tools -- contains some support routines for the nlid toolbox.
+	utility_tools -- contains some support routines for the nlid toolbox.
 
+	
 INSTALLATION
+
+Run setup.m to add all required subdirectories to the MATLAB path. 
+Depending on the branch of the repository being used, this script will also
+allow the user to recompile the MEX-files needed for the toolbox.
+
+Several of the more computationally intense routines are implemented 
+as MEX files.  MEX files for Windows 32 bit, Linux and MAC OSX have 
+been included in the archive's Master branch, and support for 
+Windows 64 bit is included in the Win64 branch. Users of other 
+operating systems will have to build these files themselves.
+
+To build the MEX files, set up MATLAB to compile C/C++ MEX files.
+Run the command install_nlid_mexfiles.m or setup.m. The mex files have been
+built and verified using the GCC.  The behaviour of other complilers has not been
+tested. 
+
+	
+LEGACY INSTALLATION
+
+These instructions are preserved for users of the toolbox before it was updated to a Github repository.
 
 Place the nlid_tools and utility_tools directories wherever MATLAB
 toolboxes are stored on your system, and add both of them to your 
@@ -55,10 +82,11 @@ that they are searched before the rest of the path).  These commands
 may be added to your startup.m file, so that the NLID toolbox is
 automatically enabled when MATLAB is started.
 
-Several of the more computationally intense routines are implemented
-as MEX files.  MEX files for Windows, Linux and MAC OSX have been
-included in the archive.  Users of other operating systems will have
-to build these files themselves.  
+Several of the more computationally intense routines are implemented 
+as MEX files.  MEX files for Windows 32 bit, Linux and MAC OSX have 
+been included in the archive's Master branch, and support for 
+Windows 64 bit is included in the Win64 branch. Users of other 
+operating systems will have to build these files themselves.
 
 To build the MEX files, set up MATLAB to compile C/C++ MEX files.
 Start MATLAB, and add the nlid_tools and utility_tools to the search
